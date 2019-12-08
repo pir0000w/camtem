@@ -1,0 +1,21 @@
+{% extends '/_base.phtml' %}
+
+{% block main %}
+    <body>
+        <!--<h1>ようこそ！</h1>-->
+        <div><font color="#ff0000">{{ errorMessage }}</font></div>
+        <p>ようこそ</p>
+        
+        <a href="/admin/manage">ユーザ管理</a><br>
+        
+        <a href="/admin/forms">フォーム管理</a><br>
+        
+        <a href="/admin/logs">ログ管理</a><br>
+        <!--<form method="GET" action="/admin/logout">-->
+        <!--    <input type="submit" id="logout" name="logout" value="ログアウト">-->
+        <!--</form>-->
+        
+        <a href="/admin/logout">ログアウト</a><br>
+    </body>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends './_base.phtml' %}
+
+{% block main %}
+
+<form action="/form/confirm" method="POST">
+    {% for form_item in form_items %}
+    <div>
+        <label for="">{{ form_item.label_name }}</label>
+        <input type="{{ form_item.input_type }}" name="{{ form_item.schema_name }}"/>    
+    </div>
+    {% endfor %}
+    
+    <input type="submit" value="Submit"/>
+</form>
+
+{% endblock %}

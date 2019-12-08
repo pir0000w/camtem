@@ -1,0 +1,130 @@
+{% extends './_base.phtml' %}
+
+{% block main %}
+
+<div class="">
+	<form action="/admin/forms" method="post">
+  <table>
+	  <thead>
+	    <tr>
+	      <th>表示名</th>
+				<th>カラム名</th>
+				<th>入力タイプ</th>
+				<th>必須</th>
+				<!--<th>選択肢表示名　※入力タイプがチェックボックス、ラジオボタンの際に入力</th>-->
+				<!--<th>選択肢表示名　※入力タイプがチェックボックス、ラジオボタンの際に入力</th>-->
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<!-- ここから -->
+	  	{% for itemRow in itemRows %}
+	    <tr id={{ itemRow.id }}>
+	      <td><input type="text" name="templateDispName[{{ itemRow.id }}]" placeholder="名前" value="{{ itemRow.label_name }}"></td>
+				<td><input type="text" name="templateColName[{{ itemRow.id }}]" placeholder="name" value="{{ itemRow.schema_name }}"></td>
+	      <td>
+	      <select name="templateInputType[{{ itemRow.id }}]" >
+							<option value="text">テキスト</option>
+							<option value="textarea">テキストエリア</option>
+							<option value="email">メールアドレス</option>
+							<!--<option value="checkbox">セレクトボックス</option>-->
+							<!--<option value="radio">ラジオボタン</option>-->
+				</select>
+				</td>
+				{% if itemRow.required %}
+					<td><input type="checkbox" name="templateRequired[{{ itemRow.id }}]" checked="checked" value="true"></td>
+				{% else %}
+					<td><input type="checkbox" name="templateRequired[{{ itemRow.id }}]" value="true"></td>
+				{% endif %}
+				<!--<td><input type="text" name="templateChoiceName[{{ itemRow.tempId }}]" placeholder="true" value="{{ itemRow.choice_name }}"></td>-->
+				<!--<td><input type="text" name="templateChoiceValue[{{ itemRow.tempId }}]" placeholder="true" value="{{ itemRow.choice_value }}"></td>-->
+				<!--<td><input type="text" name="templatevalidateWith[{{ itemRow.tempId }}]" placeholder="true" value="{{ itemRow.validate_with }}"></td>-->
+				</td>
+	    </tr>
+	    {% endfor %}
+	    <!-- ここまで -->
+	  </tbody>
+	  <tfoot>
+	    <tr>
+	      <td colspan="2"><button id="add_row" type="button">行追加</button></td>
+	    </tr>
+	  </tfoot>
+	</table>
+	<input type="hidden" name="row_length" value="{{ itemRows | length }}">
+	<input type="submit" name="send" value="送信">
+  </form>
+</div>
+
+
+<style type="text/css">
+	.notDisp {
+	  display:none;
+	}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+    // var idNo = 1;
+
+    // 削除ボタン押下時イベント
+    $('button[name=removeButton]').on('click',function(){
+        $(this).parent('div').remove();
+    });
+    
+    // 追加ボタンクリックイベント
+    $(document).on('click', '#add_row', function(e) {
+    	
+    	// $('.tobdy').append(`
+    	// 	<tr>
+    	// 		<td><input type="text" name="templateDispName" placeholder="名前"></td>
+    	// 		<td><input type="text" name="templateColName" placeholder="name"></td>
+    	// 		<td><select name="templateInputType">
+    	// 			<option value="text">テキスト</option>
+    	// 			<option value="textarea">テキストエリア</option>
+    	// 			<option value="email">メールアドレス</option>
+    	// 			<option value="checkbox">セレクトボックス</option>
+    	// 		  <option value="radio">ラジオボタン</option>
+    	// 		</select></td>
+    	// 		<td><input type="checkbox" name="templateRequired" value="true"></td>
+    	// 	</tr>
+    	// `);
+    	
+		  var tr_row = '' +
+		  '<tr>' +
+		    '<td><input type="text" name="templateDispName" placeholder="名前"></td>' +
+		    '<td><input type="text" name="templateColName" placeholder="name"></td>' +
+		    '<td><select name="templateInputType" >' +
+		    '  <option value="text">テキスト</option>' +
+		    '  <option value="textarea">テキストエリア</option>' +
+		    '  <option value="email">メールアドレス</option>' +
+		    '  <option value="checkbox">セレクトボックス</option>' +
+		    '  <option value="radio">ラジオボタン</option>' +
+		    '</select></td>' +
+		    '<td><input type="checkbox" name="templateRequired" value="true"></td>' +
+				//'<td><input type="text" name="templateChoiceName" placeholder="true"></td>' +
+				//'<td><input type="text" name="templateChoiceValue" placeholder="true"></td>' +
+				//'<td><input type="text" name="templatevalidateWith" placeholder="true"></td>' +
+		  '</tr>';// 挿入する行のテンプレート
+		  var row_cnt = $("table tbody").children().length;// 現在のDOMで表示されているtrの数
+		  var new_length_cnt = row_cnt + 1;
+		  $(':hidden[name="row_length"]').val(new_length_cnt);// input type=hiddenに格納されている行数を変更
+		  $(tr_row).appendTo($('table > tbody'));// tbody末尾にテンプレートを挿入
+		  
+		  $('table > tbody > tr:last').attr('id', new_length_cnt)
+		  
+		  $('table > tbody > tr:last > td > input').each(function() {
+		    var base_name = $(this).attr('name');
+		    $(this).attr('name', base_name + '[' + new_length_cnt + ']');
+		  });// input name部分を変更
+		  $('table > tbody > tr:last > td > select').each(function() {
+		  	
+		    var base_name = $(this).attr('name');
+		    $(this).attr('name', base_name + '[' + new_length_cnt + ']');
+		  });// input name部分を変更
+		});
+});
+
+</script>
+
+{% endblock %}

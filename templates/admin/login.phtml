@@ -1,0 +1,27 @@
+{% extends '/_base.phtml' %}
+
+{% block main %}
+    <body>
+        <!--<h1>ログイン</h1>-->
+        <div class="card-header bg-transparent font-weight-bold">ログイン</div>
+        <form method="POST" action="/admin/login">
+            <fieldset>
+                <div><font color="#ff0000">{{ errorMessage }}</font></div>
+                <div class="form-label-group">
+                    <label class="label" for="username">ユーザー名</label>
+                    <input class="input form-control" type="text" name="username" placeholder="ユーザー名を入力" value="">
+                </div>
+                <div class="form-label-group">
+                    <label class="label" for="password">パスワード</label>
+                    <input class="form-control" type="password" name="password" placeholder="パスワードを入力"value="" >
+                </div>
+                <div class="card-footer bg-transparent text-center">
+                    <button class="btn btn-outline-info  btn-lg">
+                            LOGIN
+                    </button>
+                </div>
+                <!--<input type="submit" id="login" name="login" value="ログイン">-->
+            </fieldset>
+        </form>
+    </body>
+{% endblock %}
