@@ -3,10 +3,15 @@
 {% block main %}
 
 <form action="/form/confirm" method="POST">
+    {{ err_msg }}
+    
     {% for form_item in form_items %}
     <div>
         <label for="">{{ form_item.label_name }}</label>
-        <input type="{{ form_item.input_type }}" name="{{ form_item.schema_name }}"/>    
+        <input type="{{ form_item.input_type }}" name="{{ form_item.schema_name }}" value='{{ session.param }}'/>    
+        {% if form_item.required %}
+        <p>必須</p>
+        {% endif %}
     </div>
     {% endfor %}
     

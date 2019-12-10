@@ -7,12 +7,22 @@ $container = $app->getContainer();
 
 // Twig
 $container['view'] = function ($container) {
-    return new \Slim\Views\Twig(
-        __DIR__ . '/../templates', [
-        __DIR__ . '/../cache',
-        'auto_reload' => true
-        ]);
-    };
+    
+    $view = new \Slim\Views\Twig(
+                __DIR__ . '/../templates', [
+                __DIR__ . '/../cache',
+                'auto_reload' => true
+            ]);
+    
+    $view->getEnvironment()->addGlobal('session', $_SESSION);
+	return $view;
+    
+    // return new \Slim\Views\Twig(
+    //     __DIR__ . '/../templates', [
+    //     __DIR__ . '/../cache',
+    //     'auto_reload' => true
+    //     ]);
+};
     
 // DB Connetcion
 $container['db'] = function ($c) {
@@ -30,8 +40,8 @@ require __DIR__ . '/middleware.php';
 // Service Routing
 $app->get('/', FormController::class . ':index');
 $app->get('/form[/]', FormController::class . ':regist');
-$app->get('/form/confirm[/]', FormController::class . ':confirm');
-$app->get('/form/complete[/]', FormController::class . ':complete');
+$app->post('/form/confirm[/]', FormController::class . ':confirm');
+$app->post('/form/complete[/]', FormController::class . ':complete');
 
 // Admin Routing
 $app->get('/admin[/]', AdminController::class . ':getIndex');   // Loged in

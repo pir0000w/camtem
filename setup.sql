@@ -64,6 +64,7 @@ CREATE TABLE `form_values` (
   `text` varchar(255),
   `int` int,
   `datetime` timestamp,
+  `bool` boolean,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),

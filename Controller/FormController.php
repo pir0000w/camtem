@@ -33,7 +33,6 @@ class FormController
                 $form_items[$i]['required'] = false;
             }
         }
-        // var_dump($items);
         return $this->app->view->render($response, 'form/index.html', ['form_items' => $form_items]);
     }
 
@@ -45,8 +44,39 @@ class FormController
     
     public function confirm(Request $request, Response $response)
     {
-        $name = $request->getAttribute('name');
-        return $this->app->view->render($response, 'form/confirm.html');
+        $postParams = $request->getParsedBody();
+        // var_dump($postParams);
+        $_SESSION['param'] = $postParams;
+        var_dump($_SESSION['param']);
+        
+        $sql = "SELECT schema_name, required,  format_with FROM form_items ";
+        $stmt = $this->app->db->query($sql);
+        $form_items = [];
+        
+        while($row = $stmt->fetch()) {
+            $form_items[] = $row;
+        }
+         var_dump($form_items);
+         
+         foreach($form_items as $form_item){
+             $err_msg='';
+             
+             ($form_item['required'] === '1') ? $form_item['required'] = true: $form_item['required']  =false;
+             if($form_item['required']){
+                 
+                 if ($postParams[$form_item['schema_name']] == ''){
+                     $err_msg = '未入力項目があります';
+                     return $this->app->view->render($response, 'form/index.html', ['err_msg' => $err_msg]);
+                 }
+                 
+             }
+             
+            //  $postParams[$form_item['schema_name']]
+            // var_dump($form_item);
+         }
+        
+        
+        // return $this->app->view->render($response, 'form/confirm.html');
     }
     
     public function complete(Request $request, Response $response)
