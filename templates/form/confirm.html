@@ -1,16 +1,14 @@
 {% extends './_base.phtml' %}
 
 {% block main %}
-confirm!!
 
-<form action="/form/confirm" method="POST">
-    {% for form_item in form_items %}
+<form action="/form/complete" method="POST">
+    {% for key, item in session %}
     <div>
-        <label for="">{{ form_item.label_name }}</label>
-        <p></p>
+        <label for="">{{ key }}</label>：<p>{{ item }}</p>
+        <input type="hidden" name="{{ key }}" value="{{ item }}">
     </div>
     {% endfor %}
     <input type="submit" value="Submit"/>
 </form>
-{{ csrf_field() }}
 {% endblock %}

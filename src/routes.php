@@ -14,7 +14,7 @@ $container['view'] = function ($container) {
                 'auto_reload' => true
             ]);
     
-    $view->getEnvironment()->addGlobal('session', $_SESSION);
+    // $view->getEnvironment()->addGlobal('session', $_SESSION);
 	return $view;
     
     // return new \Slim\Views\Twig(
@@ -39,7 +39,7 @@ require __DIR__ . '/middleware.php';
 
 // Service Routing
 $app->get('/', FormController::class . ':index');
-$app->get('/form[/]', FormController::class . ':regist');
+// $app->get('/form[/]', FormController::class . ':regist');
 $app->post('/form/confirm[/]', FormController::class . ':confirm');
 $app->post('/form/complete[/]', FormController::class . ':complete');
 
