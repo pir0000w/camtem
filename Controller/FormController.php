@@ -35,12 +35,6 @@ class FormController
         }
         return $this->app->view->render($response, 'form/index.html', ['form_items' => $form_items]);
     }
-
-    // public function regist(Request $request, Response $response)
-    // {
-    //     $name = $request->getAttribute('name');
-    //     return $this->app->view->render($response, 'form/regist.html');
-    // }
     
     public function confirm(Request $request, Response $response)
     {
@@ -85,7 +79,40 @@ class FormController
             $form_items[] = $row;
         }
         
+        // form_submitsに登録してid取得
+        $sql = "INSERT INTO `form_submits` (
+                    `created_at`, 
+                    `updated_at`) 
+                    VALUES (:created_at, :updated_at);";
+        $stmt = $this->app->db->prepare($sql);
+        
+        $this->app->db->beginTransaction();
+        try {
+            $stmt->bindValue(':created_at', date("Y-m-d H:i:s"), PDO::PARAM_STR);
+            $stmt->bindValue(':updated_at', date("Y-m-d H:i:s"), PDO::PARAM_STR);
+            $res = $stmt->execute();
+            
+            $last_id =  $this->app->db->lastInsertId('id');
+            var_dump($last_id);
+        } catch (Exception $e) {
+            $this->app->db->rollBack();
+            throw $e;
+        }
+        
+        // form_valueに登録
         
         // return $this->app->view->render($response, 'form/complete.html');
+    }
+    
+    private function get_formitems(){
+        $sql = "SELECT * FROM form_items ";
+        $stmt = $this->app->db->query($sql);
+        $form_items = [];
+        
+        while($row = $stmt->fetch()) {
+            $form_items[] = $row;
+        }
+        
+        return $form_items;
     }
 }

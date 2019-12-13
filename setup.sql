@@ -62,6 +62,7 @@ CREATE TABLE `form_values` (
   `submit_id` int,
   `colmun_name` varchar(255),
   `text` varchar(255),
+  `textarea` varchar(510),
   `int` int,
   `datetime` timestamp,
   `bool` boolean,
