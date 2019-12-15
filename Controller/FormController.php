@@ -69,57 +69,55 @@ class FormController
     public function complete(Request $request, Response $response)
     {
         $postParams = $request->getParsedBody();
-        var_dump($postParams);
         
-        
-        // form_submitsに登録してid取得
-        $sql = "INSERT INTO `form_submits` (
-                    `created_at`, `updated_at`) 
-                    VALUES (:created_at, :updated_at);";
-        $stmt = $this->app->db->prepare($sql);
-
-        $this->app->db->beginTransaction();
         try {
-            $stmt->bindValue(':created_at', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $stmt->bindValue(':updated_at', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $res = $stmt->execute();
+            $this->app->db->beginTransaction();
             
+            // form_submitsに登録してid取得
+            $fs_sql = "INSERT INTO `form_submits` (
+                        `created_at`, `updated_at`) 
+                        VALUES (:created_at, :updated_at);";
+            $fs_stmt = $this->app->db->prepare($fs_sql);
+
+            $fs_stmt->bindValue(':created_at', date("Y-m-d H:i:s"), PDO::PARAM_STR);
+            $fs_stmt->bindValue(':updated_at', date("Y-m-d H:i:s"), PDO::PARAM_STR);
+            $fs_res = $fs_stmt->execute();
             $last_id = $this->app->db->lastInsertId('id');
-            // var_dump($last_id);
             
             // form_valueに登録
             foreach ($postParams as $key => $value) {
                 
                 $fi_sql = "SELECT label_name, schema_name, input_type FROM form_items where schema_name = :key ";
                 $fi_stmt = $this->app->db->prepare($fi_sql);
-                $fi_stmt = bindValue(':key', $key, PDO::PARAM_STR);
+                $fi_stmt->bindValue(':key', $key, PDO::PARAM_STR);
                 $fi_stmt->execute();
                 $fi_result = $fi_stmt->fetch();
-                
-                var_dump($fi_result);
-                
 
-                $fv_sql = "INSERT INTO `form_values` (
-                        `submit_id`, ,`colmun_name`, `text`, `textarea`, `int`, `datetime`, `bool`) 
-                        VALUES (:submit_id, :colmun_name, :text, :textarea, :int, :datetime, :bool);";
+                $fv_sql = "INSERT INTO `form_values`
+                                (`submit_id`, `label_name`, `colmun_name`, `%s`) 
+                                VALUES (:submit_id, :label_name, :colmun_name, :%s);";
+                $fv_sql = sprintf($fv_sql, $fi_result['input_type'], $fi_result['input_type']);
                 $fv_stmt = $this->app->db->prepare($fv_sql);
-                        
                 $fv_stmt->bindValue(':submit_id', intVal($last_id), PDO::PARAM_INT);
+                $fv_stmt->bindValue(':label_name', $fi_result['label_name'], PDO::PARAM_STR);
                 $fv_stmt->bindValue(':colmun_name', $key, PDO::PARAM_STR);
                 
                 switch($fi_result['input_type']) {
                     
                     case "text":
+                        $fv_stmt->bindValue(':text', $value, PDO::PARAM_STR);
+                        break;
+                        
                     case "textarea":
-                        $fv_stmt->bindValue(":${fi_result['input_type']}", $value, PDO::PARAM_STR);
+                        $fv_stmt->bindValue(':textarea', $value, PDO::PARAM_STR);
                         break;
                     
                     case "int":
                         $fv_stmt->bindValue(':int', intVal($value), PDO::PARAM_INT);
                         break;
                         
-                    case "datetime":
-                        $fv_stmt->bindValue(':datetime', date("Y-m-d H:i:s", $value), PDO::PARAM_STR);
+                    case "date":
+                        $fv_stmt->bindValue(':date', date("Y-m-d H:i:s", $value), PDO::PARAM_STR);
                         break;
                         
                     case "bool":
@@ -129,18 +127,15 @@ class FormController
                     default:
                         break;
                 }
-                
                 $fv_res = $fv_stmt->execute();
                 
             }
+            $this->app->db->commit();
+            return $this->app->view->render($response, 'form/complete.html');
         } catch (Exception $e) {
-            $this->app->db->rollBack();
+            // $this->app->db->rollBack();
             throw $e;
         }
-        
-        
-        
-        // return $this->app->view->render($response, 'form/complete.html');
     }
     
     private function get_formitems(){

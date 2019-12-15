@@ -10,7 +10,7 @@ class AdminController
 
     const TYP_STR = 1;
     const TYP_INT = 2;
-    const TYP_DATETIME = 3;
+    const TYP_DATE = 3;
     const TYP_BOOL = 4;
     
     public function __construct(Container $app) {
@@ -197,7 +197,6 @@ class AdminController
             }
             
         }
-        // var_dump($result);
         
         $sql = "SELECT * FROM form_items";
         $stmt = $this->app->db->query($sql);

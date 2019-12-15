@@ -60,11 +60,12 @@ CREATE TABLE `form_submits` (
 CREATE TABLE `form_values` (
   `id` int AUTO_INCREMENT,
   `submit_id` int,
+  `label_name` varchar(255),
   `colmun_name` varchar(255),
   `text` varchar(255),
   `textarea` varchar(510),
   `int` int,
-  `datetime` timestamp,
+  `date` date,
   `bool` boolean,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
